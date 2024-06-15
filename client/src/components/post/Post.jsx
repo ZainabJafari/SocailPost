@@ -1,26 +1,47 @@
-import "./post.scss";
-import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
-import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
-import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
-import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { Link } from "react-router-dom";
-import Comments from "../comments/Comments";
-import { useState } from "react";
-import moment from 'moment'
+// src/components/post/Post.jsx
+import React, { useState, useEffect, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
+import TextsmsOutlinedIcon from '@mui/icons-material/TextsmsOutlined';
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import Comments from '../comments/Comments';
+import { usePosts } from '../../context/PostsContext';
+import { AuthContext } from '../../context/authContext';
+import './post.scss';
 
 const Post = ({ post }) => {
   const [commentOpen, setCommentOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  //TEMPORARY
-  const liked = false;
+  const { currentUser } = useContext(AuthContext);
+  const { likes, fetchLikes, addLike, removeLike, deletePost } = usePosts();
+
+  useEffect(() => {
+    fetchLikes(post.id);
+  }, [post.id, fetchLikes]);
+
+  const handleLike = (e) => {
+    e.preventDefault();
+    if (likes[post.id]?.includes(currentUser.id)) {
+      removeLike(post.id);
+    } else {
+      addLike(post.id);
+    }
+  };
+
+  const handleDelete = () => {
+    deletePost(post.id);
+  };
 
   return (
     <div className="post">
       <div className="container">
         <div className="user">
           <div className="userInfo">
-            <img src={post.profilePic} alt="" />
+            <img src={"/upload/" + post.profilePic} alt="" />
             <div className="details">
               <Link
                 to={`/profile/${post.userId}`}
@@ -31,20 +52,27 @@ const Post = ({ post }) => {
               <span className="date">{moment(post.createdAt).fromNow()}</span>
             </div>
           </div>
-          <MoreHorizIcon />
+          <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
+          {menuOpen && post.userId === currentUser.id && (
+            <button onClick={handleDelete}>delete</button>
+          )}
         </div>
         <div className="content">
           <p>{post.desc}</p>
-          <img src={"./upload/"+post.img} alt="" />
+          <img src={"/upload/" + post.img} alt="" />
         </div>
         <div className="info">
-          <div className="item">
-            {liked ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
-            12 Likes
+          <div className="item" onClick={handleLike}>
+            {likes[post.id]?.includes(currentUser.id) ? (
+              <FavoriteOutlinedIcon style={{ color: "red" }} />
+            ) : (
+              <FavoriteBorderOutlinedIcon />
+            )}
+            {likes[post.id]?.length || 0} Likes
           </div>
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
             <TextsmsOutlinedIcon />
-            12 Comments
+            See Comments
           </div>
           <div className="item">
             <ShareOutlinedIcon />
