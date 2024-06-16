@@ -1,4 +1,3 @@
-// src/components/post/Post.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
@@ -17,6 +16,8 @@ const Post = ({ post }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { currentUser } = useContext(AuthContext);
+
+  
   const { likes, fetchLikes, addLike, removeLike, deletePost } = usePosts();
 
   useEffect(() => {
@@ -26,9 +27,9 @@ const Post = ({ post }) => {
   const handleLike = (e) => {
     e.preventDefault();
     if (likes[post.id]?.includes(currentUser.id)) {
-      removeLike(post.id);
+      removeLike(post.id, currentUser.id);
     } else {
-      addLike(post.id);
+      addLike(post.id, currentUser.id);
     }
   };
 
@@ -43,19 +44,14 @@ const Post = ({ post }) => {
           <div className="userInfo">
             <img src={"/upload/" + post.profilePic} alt="" />
             <div className="details">
-              <Link
-                to={`/profile/${post.userId}`}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
+              <Link to={`/profile/${post.userId}`} style={{ textDecoration: "none", color: "inherit" }}>
                 <span className="name">{post.name}</span>
               </Link>
               <span className="date">{moment(post.createdAt).fromNow()}</span>
             </div>
           </div>
           <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
-          {menuOpen && post.userId === currentUser.id && (
-            <button onClick={handleDelete}>delete</button>
-          )}
+          {menuOpen && post.userId === currentUser.id && <button onClick={handleDelete}>delete</button>}
         </div>
         <div className="content">
           <p>{post.desc}</p>

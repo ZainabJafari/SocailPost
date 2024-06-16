@@ -7,25 +7,18 @@ import { usePosts } from "../../context/PostsContext";
 const Comments = ({ postId }) => {
   const [desc, setDesc] = useState("");
   const { currentUser } = useContext(AuthContext);
-
-  const { comments, fetchComments, createComment} = usePosts();
+  const { comments, fetchComments, createComment } = usePosts();
 
   useEffect(() => {
     fetchComments(postId);
   }, [postId, fetchComments]);
 
- 
   const handleClick = async (e) => {
     e.preventDefault();
-    createComment({ desc, postId });
+    // Skicka med postId när du skapar en kommentar
+    await createComment({ desc, postId });
     setDesc("");
   };
-
-/*   const handleClick = async (e) => {
-    e.preventDefault();
-    mutation.mutate({ desc, postId });
-    setDesc("");
-  }; */
 
   return (
     <div className="comments">
@@ -39,20 +32,23 @@ const Comments = ({ postId }) => {
         />
         <button onClick={handleClick}>Send</button>
       </div>
-      {comments.map((comment) => (
-            <div className="comment" key={comment.id}>
-              <img src={"/upload/" + comment.profilePic} alt="" />
-              <div className="info">
-                <span>{comment.name}</span>
-                <p>{comment.desc}</p>
-              </div>
-              <span className="date">
-                {moment(comment.createdAt).fromNow()}
-              </span>
+      {/* Visa endast kommentarer för aktuell postId */}
+      {comments
+        .filter((comment) => comment.postId === postId)
+        .map((comment) => (
+          <div className="comment" key={comment.id}>
+            <img src={"/upload/" + comment.profilePic} alt="" />
+            <div className="info">
+              <span>{comment.name}</span>
+              <p>{comment.desc}</p>
             </div>
-          ))}
+            <span className="date">
+              {moment(comment.createdAt).fromNow()}
+            </span>
+          </div>
+        ))}
     </div>
   );
 };
 
-export default Comments;
+export default Comments
