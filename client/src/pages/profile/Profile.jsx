@@ -8,9 +8,33 @@ import PlaceIcon from "@mui/icons-material/Place";
 import LanguageIcon from "@mui/icons-material/Language";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import Posts from "../../components/posts/Posts"
+import Posts from "../../components/posts/Posts";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 const Profile = () => {
+  const userId = useLocation().pathname.split('/')[2];
+  const [user, setUser] = useState(null);
+
+  const fetchUser = async (userId) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/api/users/${userId}`);
+      setUser(response.data);
+      console.log(response.data)
+    } catch (error) {
+      console.error('Failed to fetch user', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser(userId);
+  }, [userId]);
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="profile">
       <div className="images">
@@ -31,29 +55,29 @@ const Profile = () => {
             <a href="http://facebook.com">
               <FacebookTwoToneIcon fontSize="large" />
             </a>
-            <a href="http://facebook.com">
+            <a href="http://instagram.com">
               <InstagramIcon fontSize="large" />
             </a>
-            <a href="http://facebook.com">
+            <a href="http://twitter.com">
               <TwitterIcon fontSize="large" />
             </a>
-            <a href="http://facebook.com">
+            <a href="http://linkedin.com">
               <LinkedInIcon fontSize="large" />
             </a>
-            <a href="http://facebook.com">
+            <a href="http://pinterest.com">
               <PinterestIcon fontSize="large" />
             </a>
           </div>
           <div className="center">
-            <span>Jane Doe</span>
+            <span>{user.name}</span>
             <div className="info">
               <div className="item">
                 <PlaceIcon />
-                <span>USA</span>
+                <span>{user.location || "N/A"}</span>
               </div>
               <div className="item">
                 <LanguageIcon />
-                <span>lama.dev</span>
+                <span>{user.website || "N/A"}</span>
               </div>
             </div>
             <button>follow</button>
@@ -63,7 +87,7 @@ const Profile = () => {
             <MoreVertIcon />
           </div>
         </div>
-      <Posts/>
+      <Posts userId={userId}/>
       </div>
     </div>
   );

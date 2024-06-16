@@ -11,8 +11,18 @@ export const usePosts = () => {
 export const PostsProvider = ({ children }) => {
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
+  const [user, setUser] = useState([]);
   const [likes, setLikes] = useState({});
   
+  const fetchUser = async (userId) => {
+    try {
+      const response = await makeRequest.get('/users/find/', { params: { userId } });
+      setUser(response.data);
+      console.log(response.data)
+    } catch (error) {
+      console.error('Failed to fetch user', error);
+    }
+  };
   const fetchPosts = async (userId) => {
     try {
       const response = await makeRequest.get('/posts', { params: { userId } });
@@ -110,7 +120,7 @@ export const PostsProvider = ({ children }) => {
 
 
   return (
-    <PostsContext.Provider value={{ posts, fetchPosts, createPost, deletePost, createComment, comments, fetchComments, fetchLikes, likes, addLike, removeLike }}>
+    <PostsContext.Provider value={{ posts, fetchPosts, createPost, deletePost, createComment, comments, fetchComments, fetchLikes, likes, addLike, removeLike, fetchUser, user }}>
       {children}
     </PostsContext.Provider>
   );
