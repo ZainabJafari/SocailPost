@@ -7,6 +7,7 @@ import userRoutes from './routes/users.js';
 import postRoutes from './routes/posts.js';
 import commentRoutes from './routes/comments.js'
 import likesRoutes from './routes/likes.js'
+import relationshipRoutes from './routes/relationshipt.js'
 import cookieParser from 'cookie-parser';
 
 const app = express();
@@ -47,6 +48,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/likes', likesRoutes);
+app.use('/api/relationships', relationshipRoutes);
 
 app.listen(8000, () => {
     console.log('API working on port 8000');

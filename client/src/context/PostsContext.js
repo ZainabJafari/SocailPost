@@ -1,7 +1,7 @@
 // src/context/PostsContext.js
 import React, { createContext, useContext, useState } from 'react';
 import { makeRequest } from '../axios';
-
+import axios from 'axios';
 const PostsContext = createContext();
 
 export const usePosts = () => {
@@ -12,17 +12,31 @@ export const PostsProvider = ({ children }) => {
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
   const [user, setUser] = useState([]);
+  const [relationship, setRelationship] = useState([]);
   const [likes, setLikes] = useState({});
   
   const fetchUser = async (userId) => {
     try {
-      const response = await makeRequest.get('/users/find/', { params: { userId } });
+      const response = await axios.get(`http://localhost:8000/api/users/${userId}`);
       setUser(response.data);
       console.log(response.data)
     } catch (error) {
       console.error('Failed to fetch user', error);
     }
   };
+
+  const updateUser = async (updatedUser) => {
+    try {
+      const response = await makeRequest.put("/users", updatedUser);
+      setUser(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to update user", error);
+      throw error;
+    }
+  };
+
+
   const fetchPosts = async (userId) => {
     try {
       const response = await makeRequest.get('/posts', { params: { userId } });
@@ -117,10 +131,37 @@ export const PostsProvider = ({ children }) => {
     }
   };
 
-
+  const fetchRelationship = async (userId) => {
+    try {
+      const response = await axios.get('http://localhost:8000/api/relationships', { params: { userId } });
+      setRelationship(response.data);
+    } catch (error) {
+      console.error('Failed to fetch relationship', error);
+    }
+  };
+  
+  const addRelationship = async (userId) => {
+    try {
+      await axios.post('http://localhost:8000/api/relationships', { userId });
+      setRelationship((prev) => [...prev, userId]);
+    } catch (error) {
+      console.error('Failed to add relationship', error);
+    }
+  };
+  
+  const removeRelationship = async (userId) => {
+    try {
+      await axios.delete('http://localhost:8000/api/relationships', { params: { userId } });
+      setRelationship((prev) => prev.filter((id) => id !== userId));
+    } catch (error) {
+      console.error('Failed to remove relationship', error);
+    }
+  };
+  
+  
 
   return (
-    <PostsContext.Provider value={{ posts, fetchPosts, createPost, deletePost, createComment, comments, fetchComments, fetchLikes, likes, addLike, removeLike, fetchUser, user }}>
+    <PostsContext.Provider value={{ posts, fetchPosts, createPost, deletePost, createComment, comments, fetchComments, fetchLikes, likes, addLike, removeLike, fetchUser, user, fetchRelationship, relationship, addRelationship, removeRelationship, updateUser }}>
       {children}
     </PostsContext.Provider>
   );

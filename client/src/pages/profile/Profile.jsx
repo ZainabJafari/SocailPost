@@ -9,45 +9,42 @@ import LanguageIcon from "@mui/icons-material/Language";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Posts from "../../components/posts/Posts";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
+import { usePosts } from "../../context/PostsContext";
+import { AuthContext } from "../../context/authContext";
+import Update from "../../components/update/Update";
 
 const Profile = () => {
-  const userId = useLocation().pathname.split('/')[2];
-  const [user, setUser] = useState(null);
 
-  const fetchUser = async (userId) => {
-    try {
-      const response = await axios.get(`http://localhost:8000/api/users/${userId}`);
-      setUser(response.data);
-      console.log(response.data)
-    } catch (error) {
-      console.error('Failed to fetch user', error);
-    }
-  };
+  const [openUpdate, setOpenUpdate] = useState(false)
+  const userId = parseInt(useLocation().pathname.split('/')[2]);
+  const { currentUser } = useContext(AuthContext);
 
+  const { user, fetchUser, fetchRelationship, relationship, addRelationship, removeRelationship } = usePosts();
+   
   useEffect(() => {
     fetchUser(userId);
+    fetchRelationship(userId);
   }, [userId]);
 
   if (!user) {
     return <div>Loading...</div>;
   }
 
+  const handleFollow = () => {
+    if (relationship.includes(currentUser.id)) {
+      removeRelationship(userId);
+    } else {
+      addRelationship(userId);
+    }
+  };
+
   return (
     <div className="profile">
       <div className="images">
-        <img
-          src="https://images.pexels.com/photos/13440765/pexels-photo-13440765.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-          alt=""
-          className="cover"
-        />
-        <img
-          src="https://images.pexels.com/photos/14028501/pexels-photo-14028501.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load"
-          alt=""
-          className="profilePic"
-        />
+        <img src={user.coverPic} alt="" className="cover" />
+        <img src={user.profilePic} alt="" className="profilePic" />
       </div>
       <div className="profileContainer">
         <div className="uInfo">
@@ -73,23 +70,29 @@ const Profile = () => {
             <div className="info">
               <div className="item">
                 <PlaceIcon />
-                <span>{user.location || "N/A"}</span>
+                <span>{user.city}</span>
               </div>
               <div className="item">
                 <LanguageIcon />
                 <span>{user.website || "N/A"}</span>
               </div>
             </div>
-            <button>follow</button>
+            {userId === currentUser.id ? (
+              <button onClick={() => setOpenUpdate(true)}>Update</button>
+            ) : (
+              <button onClick={handleFollow}>
+                {relationship.includes(currentUser.id) ? "Following" : "Follow"}
+              </button>
+            )}
           </div>
           <div className="right">
             <EmailOutlinedIcon />
             <MoreVertIcon />
           </div>
         </div>
-      <Posts userId={userId}/>
+        <Posts userId={userId} />
       </div>
-    </div>
+{  openUpdate && <Update setOpenUpdate={setOpenUpdate} user={user} />}  </div>
   );
 };
 
