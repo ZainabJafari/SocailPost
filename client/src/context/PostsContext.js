@@ -11,15 +11,16 @@ export const usePosts = () => {
 export const PostsProvider = ({ children }) => {
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
-  const [user, setUser] = useState([]);
   const [relationship, setRelationship] = useState([]);
   const [likes, setLikes] = useState({});
   
+  const [user, setUser] = useState({});
+
   const fetchUser = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/users/${userId}`);
+      const response = await axios.get(`http://localhost:8000/api/users/${userId}`, { withCredentials: true });
       setUser(response.data);
-      console.log(response.data)
+      console.log(response.data);
     } catch (error) {
       console.error('Failed to fetch user', error);
     }
@@ -27,14 +28,15 @@ export const PostsProvider = ({ children }) => {
 
   const updateUser = async (updatedUser) => {
     try {
-      const response = await makeRequest.put("/users", updatedUser);
+      const response = await axios.put(`http://localhost:8000/api/users/${user.id}`, updatedUser, { withCredentials: true });
       setUser(response.data);
-      return response.data;
+      console.log('User updated successfully');
     } catch (error) {
-      console.error("Failed to update user", error);
+      console.error('Failed to update user', error);
       throw error;
     }
   };
+
 
 
   const fetchPosts = async (userId) => {

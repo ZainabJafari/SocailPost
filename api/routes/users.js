@@ -3,6 +3,6 @@ import { getUser, updateUser } from '../controllers/user.js'
 const router = express.Router()
 
 router.get('/:userId', getUser )
-router.put('/', updateUser )
+router.put('/:userId', updateUser);  // Include userId in the URL
 
 export default router

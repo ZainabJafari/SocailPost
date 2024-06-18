@@ -26,8 +26,10 @@ export const updateUser = (req, res) => {
   
     jwt.verify(token, "secretkey", (err, userInfo) => {
       if (err) return res.status(403).json("Token is not valid!");
-  
-      const q = "UPDATE users SET `name`=?, `city`=?, `website`=?, `profilePic`=?, `coverPic`=? WHERE id= ?";
+
+      const userId = req.params.userId;  // Get userId from URL
+
+      const q = "UPDATE users SET `name`=?, `city`=?, `website`=?, `profilePic`=?, `coverPic`=? WHERE id=?";
   
       db.query(
         q,
@@ -35,15 +37,15 @@ export const updateUser = (req, res) => {
             req.body.name,
             req.body.city,
             req.body.website,
-            req.body.coverPic,
             req.body.profilePic,
-            userInfo.id,
+            req.body.coverPic,
+            userId,  // Use userId from URL
         ],
         (err, data) => {
             if (err) res.status(500).json(err);
             if (data.affectedRows > 0) return res.json("Updated");
-            return res.status(403).json("You can update only your post")
+            return res.status(403).json("You can update only your profile");
         }
-      )
+      );
     });
-  };
+};

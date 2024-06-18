@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useUser } from "../../context/UserContext"; // Se till att sökvägen är korrekt
+import axios from "axios";
 import "./update.scss";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { usePosts } from "../../context/PostsContext";
 
 const Update = ({ setOpenUpdate }) => {
-  const { user, updateUser } = useUser();
+  const { user, updateUser } = usePosts();
   const [cover, setCover] = useState(null);
   const [profile, setProfile] = useState(null);
   const [texts, setTexts] = useState({
@@ -20,7 +20,7 @@ const Update = ({ setOpenUpdate }) => {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await post("http://localhost:8000/api/users", formData);
+      const res = await axios.post("http://localhost:8000/api/users", formData); // Correct endpoint for file upload
       return res.data;
     } catch (err) {
       console.log(err);
@@ -66,7 +66,6 @@ const Update = ({ setOpenUpdate }) => {
                   }
                   alt=""
                 />
-                <CloudUploadIcon className="icon" />
               </div>
             </label>
             <input
@@ -86,7 +85,6 @@ const Update = ({ setOpenUpdate }) => {
                   }
                   alt=""
                 />
-                <CloudUploadIcon className="icon" />
               </div>
             </label>
             <input

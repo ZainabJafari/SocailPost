@@ -4,13 +4,13 @@ import { AuthContext } from "../../context/authContext";
 import "./login.scss";
 
 const Login = () => {
-
   const [inputs, setInputs] = useState({
     username: '',
     password: '',
-  })
-  const [error, setError] = useState(null)
-  const navigate = useNavigate()
+  });
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -18,14 +18,13 @@ const Login = () => {
   const { login } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
       await login(inputs);
-      navigate("/")
-    } catch (error) {
-      setError(error.respons.data)
+      navigate("/");
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed');
     }
-
   };
 
   return (
@@ -48,7 +47,7 @@ const Login = () => {
           <form>
             <input type="text" placeholder="Username" name="username" onChange={handleChange} />
             <input type="password" placeholder="Password" name="password" onChange={handleChange}/>
-            {error && error}
+            {error && <p className="error">{error}</p>}
             <button onClick={handleLogin}>Login</button>
           </form>
         </div>
