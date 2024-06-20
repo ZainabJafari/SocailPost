@@ -14,7 +14,7 @@ export const PostsProvider = ({ children }) => {
   const [relationship, setRelationship] = useState([]);
   const [likes, setLikes] = useState({});
   
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
 
   const fetchUser = async (userId) => {
     try {
@@ -69,7 +69,6 @@ export const PostsProvider = ({ children }) => {
   const fetchComments = async (postId) => {
     try {
       const response = await makeRequest.get('/comments', { params: { postId } });
-      // Anpassa till att bara hämta kommentarer för en specifik postId
       setComments(response.data);
     } catch (error) {
       console.error('Failed to fetch comments', error);
@@ -79,7 +78,6 @@ export const PostsProvider = ({ children }) => {
   const createComment = async (newComment) => {
     try {
       const response = await makeRequest.post('/comments', newComment);
-      // Uppdatera endast kommentarslistan för den specifika posten
       setComments((prevComments) => [response.data, ...prevComments]);
     } catch (error) {
       console.error('Failed to create comment', error);

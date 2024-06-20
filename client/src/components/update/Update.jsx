@@ -16,11 +16,15 @@ const Update = ({ setOpenUpdate }) => {
   });
 
   const upload = async (file) => {
-    console.log(file);
+    const formData = new FormData();
+    formData.append("file", file);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await axios.post("http://localhost:8000/api/users", formData); // Correct endpoint for file upload
+      const res = await axios.post("http://localhost:8000/api/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+        withCredentials: true // Ensure credentials are included
+      });
       return res.data;
     } catch (err) {
       console.log(err);
@@ -36,11 +40,26 @@ const Update = ({ setOpenUpdate }) => {
 
     let coverUrl;
     let profileUrl;
-    coverUrl = cover ? await upload(cover) : user.coverPic;
-    profileUrl = profile ? await upload(profile) : user.profilePic;
+    if (cover) {
+      coverUrl = await upload(cover);
+    } else {
+      coverUrl = user.coverPic;
+    }
+
+    if (profile) {
+      profileUrl = await upload(profile);
+    } else {
+      profileUrl = user.profilePic;
+    }
+
+    const updatedUser = {
+      ...texts,
+      coverPic: coverUrl,
+      profilePic: profileUrl,
+    };
 
     try {
-      await updateUser({ ...texts, coverPic: coverUrl, profilePic: profileUrl });
+      await updateUser(updatedUser);
       setOpenUpdate(false);
       setCover(null);
       setProfile(null);
@@ -59,11 +78,7 @@ const Update = ({ setOpenUpdate }) => {
               <span>Cover Picture</span>
               <div className="imgContainer">
                 <img
-                  src={
-                    cover
-                      ? URL.createObjectURL(cover)
-                      : "/upload/" + user.coverPic
-                  }
+                  src={cover ? URL.createObjectURL(cover) : "/upload/" + user.coverPic}
                   alt=""
                 />
               </div>
@@ -78,11 +93,7 @@ const Update = ({ setOpenUpdate }) => {
               <span>Profile Picture</span>
               <div className="imgContainer">
                 <img
-                  src={
-                    profile
-                      ? URL.createObjectURL(profile)
-                      : "/upload/" + user.profilePic
-                  }
+                  src={profile ? URL.createObjectURL(profile) : "/upload/" + user.profilePic}
                   alt=""
                 />
               </div>

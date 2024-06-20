@@ -15,7 +15,6 @@ const Comments = ({ postId }) => {
 
   const handleClick = async (e) => {
     e.preventDefault();
-    // Skicka med postId när du skapar en kommentar
     await createComment({ desc, postId });
     setDesc("");
   };
@@ -32,7 +31,6 @@ const Comments = ({ postId }) => {
         />
         <button onClick={handleClick}>Send</button>
       </div>
-      {/* Visa endast kommentarer för aktuell postId */}
       {comments
         .filter((comment) => comment.postId === postId)
         .map((comment) => (
@@ -51,4 +49,4 @@ const Comments = ({ postId }) => {
   );
 };
 
-export default Comments
+export default Comments;
