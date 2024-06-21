@@ -1,4 +1,3 @@
-// src/components/share/Share.jsx
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../context/authContext';
 import { usePosts } from '../../context/PostsContext';
@@ -72,9 +71,6 @@ const Share = () => {
             <div className="item">
               <img src={Map} alt="" />
               <span>Add Place</span>
-            </div>
-            <div className="item">
-              <span>Tag Friends</span>
             </div>
           </div>
           <div className="right">

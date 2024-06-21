@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
+import { usePosts } from "../../context/PostsContext";
 
 const Navbar = () => {
   const { toggle, darkMode } = useContext(DarkModeContext);
@@ -19,30 +20,24 @@ const Navbar = () => {
   return (
     <div className="navbar">
       <div className="left">
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <Link to="/" className="theme_color">
           <span>SocialPost</span>
         </Link>
+        <Link to="/" className="theme_color">          
         <HomeOutlinedIcon />
+        </Link>
         {darkMode ? (
           <WbSunnyOutlinedIcon onClick={toggle} />
         ) : (
           <DarkModeOutlinedIcon onClick={toggle} />
         )}
-        <GridViewOutlinedIcon />
-        <div className="search">
-          <SearchOutlinedIcon />
-          <input type="text" placeholder="Search..." />
-        </div>
+
       </div>
       <div className="right">
+      <Link to={`/profile/${currentUser.id}`} className="theme_color">
         <PersonOutlinedIcon />
-        <EmailOutlinedIcon />
-        <NotificationsOutlinedIcon />
+        </Link>
         <div className="user">
-          <img
-            src={currentUser.profilePic}
-            alt=""
-          />
           <span>{currentUser.name}</span>
         </div>
       </div>

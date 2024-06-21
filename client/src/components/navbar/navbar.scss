@@ -23,6 +23,7 @@
         font-weight: bold;
         font-size: 20px;
         color: themed("logo");
+        text-decoration: none;
       }
 
       .search {
@@ -75,10 +76,12 @@
           border-radius: 50%;
           object-fit: cover;
         }
-
-        span {
-        }
       }
     }
+  .theme_color{
+    color: white;
+    color: themed("textColor");
+    text-decoration: none;
+  }
   }
 }

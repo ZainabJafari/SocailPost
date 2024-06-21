@@ -14,7 +14,7 @@ const Posts = ({ userId }) => {
   return (
     <div className="posts">
       {posts.length === 0
-        ? 'Loading...'
+        ? ''
         : posts.map((post) => <Post post={post} key={post.id} />)}
     </div>
   );

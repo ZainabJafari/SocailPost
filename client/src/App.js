@@ -8,8 +8,7 @@ import {
 } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import LeftBar from "./components/leftBar/LeftBar";
-/* import RightBar from "./components/rightBar/RightBar";
- */import Home from "./pages/home/Home";
+import Home from "./pages/home/Home";
 import Profile from "./pages/profile/Profile";
 import "./style.scss";
 import { useContext } from "react";
@@ -39,8 +38,7 @@ function App() {
             <div style={{ flex: 6 }}>
               <Outlet />
             </div>
-{/*             <RightBar />
- */}          </div>
+          </div>
         </div>
         </PostsProvider>
         </AuthContextProvider>

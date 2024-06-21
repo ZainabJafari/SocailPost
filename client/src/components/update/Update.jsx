@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import "./update.scss";
 import { usePosts } from "../../context/PostsContext";
+import { AuthContext } from "../../context/authContext";
 
 const Update = ({ setOpenUpdate }) => {
   const { user, updateUser } = usePosts();
+  const { currentUser, setCurrentUser } = useContext(AuthContext);
+
   const [cover, setCover] = useState(null);
   const [profile, setProfile] = useState(null);
   const [texts, setTexts] = useState({
@@ -23,7 +26,7 @@ const Update = ({ setOpenUpdate }) => {
         headers: {
           "Content-Type": "multipart/form-data"
         },
-        withCredentials: true // Ensure credentials are included
+        withCredentials: true 
       });
       return res.data;
     } catch (err) {
@@ -57,9 +60,12 @@ const Update = ({ setOpenUpdate }) => {
       coverPic: coverUrl,
       profilePic: profileUrl,
     };
+    setCurrentUser(updateUser)
 
     try {
       await updateUser(updatedUser);
+      console.log(updateUser)
+
       setOpenUpdate(false);
       setCover(null);
       setProfile(null);

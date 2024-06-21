@@ -6,7 +6,6 @@ import { usePosts } from "../../context/PostsContext";
 
 const Comments = ({ postId }) => {
   const [desc, setDesc] = useState("");
-  const { currentUser } = useContext(AuthContext);
   const { comments, fetchComments, createComment } = usePosts();
 
   useEffect(() => {
@@ -22,27 +21,25 @@ const Comments = ({ postId }) => {
   return (
     <div className="comments">
       <div className="write">
-        <img src={"/upload/" + currentUser.profilePic} alt="" />
         <input
           type="text"
-          placeholder="write a comment"
+          placeholder="Write a comment..."
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
+          className="comment-input"
         />
-        <button onClick={handleClick}>Send</button>
+        <button onClick={handleClick} className="send-button">Send</button>
       </div>
       {comments
         .filter((comment) => comment.postId === postId)
         .map((comment) => (
           <div className="comment" key={comment.id}>
-            <img src={"/upload/" + comment.profilePic} alt="" />
+            <img src={"/upload/" + comment.profilePic} alt="Profile" className="comment-profile-pic"/>
+              <span className="comment-name">{comment.name}</span>
             <div className="info">
-              <span>{comment.name}</span>
-              <p>{comment.desc}</p>
+              <p className="comment-desc">{comment.desc}</p>
             </div>
-            <span className="date">
-              {moment(comment.createdAt).fromNow()}
-            </span>
+            <span className="date">{moment(comment.createdAt).fromNow()}</span>
           </div>
         ))}
     </div>
