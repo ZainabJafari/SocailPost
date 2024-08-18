@@ -37,12 +37,13 @@ const Post = ({ post }) => {
     deletePost(post.id);
   };
 
+
   return (
     <div className="post">
       <div className="container">
         <div className="user">
           <div className="userInfo">
-            <img src={"/upload/" + post.profilePic} alt="" />
+            <img src={"/upload/" + currentUser.name} alt="" />
             <div className="details">
               <Link to={`/profile/${post.userId}`} style={{ textDecoration: "none", color: "inherit" }}>
                 <span className="name">{post.name}</span>
@@ -51,7 +52,7 @@ const Post = ({ post }) => {
             </div>
           </div>
           <MoreHorizIcon onClick={() => setMenuOpen(!menuOpen)} />
-          {menuOpen && post.userId === currentUser.id && <button onClick={handleDelete}>delete</button>}
+          {menuOpen && post.userId === currentUser.id && <button className='btn' onClick={handleDelete}>Delete</button>}
         </div>
         <div className="content">
           <p>{post.desc}</p>
